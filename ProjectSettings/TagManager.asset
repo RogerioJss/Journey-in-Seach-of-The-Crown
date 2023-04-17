@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - chao
   - 
   - 
   - 
@@ -40,4 +40,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 86219319
+    locked: 0
+  - name: Itens
+    uniqueID: 3909950201
+    locked: 0
+  - name: Character
+    uniqueID: 3212823733
+    locked: 0
+  - name: Foreground
+    uniqueID: 3511370853
     locked: 0
