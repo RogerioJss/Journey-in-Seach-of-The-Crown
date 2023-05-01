@@ -8,9 +8,14 @@ public class Movimento : MonoBehaviour
     private Rigidbody2D rb;
 
     [SerializeField] private int velocidade = 5;
-
     [SerializeField] private Transform peDoPersonagem;
     [SerializeField] private LayerMask chaoLayer;
+    [SerializeField] private Transform look;
+    [SerializeField] private Transform cameraTarget;
+    [SerializeField] private float cameraSpeed;
+
+
+
 
     private bool estaNoChao;
     private Animator animator;
@@ -54,5 +59,9 @@ public class Movimento : MonoBehaviour
 
     private void FixedUpdate() {
         rb.velocity = new Vector2(horizontalinput * velocidade, rb.velocity.y);
+        CameraMove();
+    }
+    void CameraMove(){
+        cameraTarget.position = Vector3.MoveTowards(cameraTarget.position,look.position,cameraSpeed);
     }
 }
