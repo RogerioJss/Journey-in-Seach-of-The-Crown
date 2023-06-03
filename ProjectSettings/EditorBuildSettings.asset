@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/EscolherNick/EscolherNick.unity
     guid: abb7b6043c5df45438866bafbbb13ace
   - enabled: 1
-    path: Assets/MenuPrincipal/JogoTeste.unity
-    guid: adb68cf545f1d924bad7eab50d5c8320
+    path: Assets/CenarioParallax/CenarioPrologo.unity
+    guid: 9fe5cb3d4a19bb24d920a1e0d963f6ff
   m_configObjects: {}

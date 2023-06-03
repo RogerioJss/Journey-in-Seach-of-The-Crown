@@ -21,8 +21,8 @@ public class Movimento : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
-    private int movendoHash = Animator.StringToHash("Movendo");
-    private int pulandoHash = Animator.StringToHash("Pulando");
+    private int movendoHash = Animator.StringToHash("movendo");
+    private int pulandoHash = Animator.StringToHash("pulando");
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -59,9 +59,6 @@ public class Movimento : MonoBehaviour
 
     private void FixedUpdate() {
         rb.velocity = new Vector2(horizontalinput * velocidade, rb.velocity.y);
-        CameraMove();
     }
-    void CameraMove(){
-        cameraTarget.position = Vector3.MoveTowards(cameraTarget.position,look.position,cameraSpeed);
-    }
+    
 }
