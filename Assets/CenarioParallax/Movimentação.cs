@@ -7,7 +7,7 @@ public class Movimentação : MonoBehaviour
     private float horizontalInput;
     private Rigidbody2D rb;
 
-    [SerializeField] private int velocidade = 5;
+    [SerializeField] public float speed = 5;
 
     [SerializeField] private Transform peDoPersonagem;
     [SerializeField] private LayerMask chaoLayer;
@@ -48,6 +48,6 @@ public class Movimentação : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        rb.velocity = new Vector2(horizontalInput * velocidade, rb.velocity.y);
+        rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
     }
 }
