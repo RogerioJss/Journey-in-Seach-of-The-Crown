@@ -20,6 +20,7 @@ public class Movimento1 : MonoBehaviour
     private int pulandoHash = Animator.StringToHash("pulando");
 
     private SpriteRenderer spriteRenderer;
+    private float checkLocalX;
 
     [Header("Variaveis de Ataque")]
     public Transform atackCheck;
@@ -27,11 +28,13 @@ public class Movimento1 : MonoBehaviour
     public LayerMask layerEnemy;
     float timeNextAtack;
 
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        checkLocalX = atackCheck.localPosition.x;
     }
 
 
@@ -53,12 +56,12 @@ public class Movimento1 : MonoBehaviour
         if (horizontalInput > 0)
         {
             spriteRenderer.flipX = false;
-            atackCheck.localPosition = new Vector2(-atackCheck.localPosition.x, atackCheck.localPosition.y);//problema para o lado do colisor de ataque esta aqui
+            atackCheck.localPosition = new Vector2(checkLocalX, atackCheck.localPosition.y);//problema para o lado do colisor de ataque esta aqui
         }
         else if (horizontalInput < 0)
         {
             spriteRenderer.flipX = true;
-            atackCheck.localPosition = new Vector2(-atackCheck.localPosition.x, atackCheck.localPosition.y);//problema para o lado do colisor de ataque esta aqui
+            atackCheck.localPosition = new Vector2(-checkLocalX, atackCheck.localPosition.y);//problema para o lado do colisor de ataque esta aqui
         }
         if (timeNextAtack <= 0)
         {
@@ -72,6 +75,8 @@ public class Movimento1 : MonoBehaviour
                 timeNextAtack -= Time.deltaTime;
             }
         }
+
+        UpdateEnemy();
     }
 
     private void FixedUpdate()
@@ -88,9 +93,26 @@ public class Movimento1 : MonoBehaviour
     void PlayerAttack()
     {
         Collider2D[] enemiesAttack = Physics2D.OverlapCircleAll(atackCheck.position, radiusAttack, layerEnemy);
-        for (int i = 0; 1 < enemiesAttack.Length; i++)
+        for (int i = 0; i < enemiesAttack.Length; i++)
         {
             Debug.Log (enemiesAttack [i].name);
         }
     }
+
+
+     void UpdateEnemy(){
+        Camera cam = Camera.main;
+        float height = cam.orthographicSize * 2;
+        float width = height * cam.aspect;
+        Collider2D[] enemies = Physics2D.OverlapAreaAll(
+            new Vector2 (cam.transform.position.x - (width / 2 ), cam.transform.position.y + (height / 2 ) ),
+            new Vector2 (cam.transform.position.x + (width / 2 ), cam.transform.position.y - (height / 2 ) ),
+            layerEnemy
+            
+        );
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            Debug.Log (enemies [i].name);
+        }
+     }
 }
