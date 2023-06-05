@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Movimento1 : MonoBehaviour
 {
+   
     private float horizontalInput;
     private Rigidbody2D rb;
     [SerializeField] private int velocidade = 5;
@@ -28,6 +29,14 @@ public class Movimento1 : MonoBehaviour
     public LayerMask layerEnemy;
     float timeNextAtack;
 
+    [Header("Variaveis de combate")]
+    public int maxHealth = 100;
+    private int currentHealth;
+    public float damageDuration = 0.5f;
+    private bool isTakingDamage = false;
+
+    private EnemyMoviment currentEnemy;
+
 
     public void Awake()
     {
@@ -35,6 +44,7 @@ public class Movimento1 : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         checkLocalX = atackCheck.localPosition.x;
+        currentHealth = maxHealth;
     }
 
 
@@ -95,7 +105,12 @@ public class Movimento1 : MonoBehaviour
         Collider2D[] enemiesAttack = Physics2D.OverlapCircleAll(atackCheck.position, radiusAttack, layerEnemy);
         for (int i = 0; i < enemiesAttack.Length; i++)
         {
-            Debug.Log (enemiesAttack [i].name);
+            //Debug.Log (enemiesAttack [i].name); mostra o nome dos inimigos que o jogador ataca
+             EnemyMoviment enemy = enemiesAttack[i].GetComponent<EnemyMoviment>();
+            if (enemy != null)
+        {
+            enemy.TakeDamage(); // Chame o método TakeDamage() do inimigo para aplicar dano
+        }
         }
     }
 
@@ -112,7 +127,43 @@ public class Movimento1 : MonoBehaviour
         );
         for (int i = 0; i < enemies.Length; i++)
         {
-            Debug.Log (enemies [i].name);
+            //Debug.Log (enemies [i].name); mostra os inimigos que estao na tela
+
+            if(currentEnemy == null){
+                currentEnemy = enemies[i].GetComponent<EnemyMoviment>();
+                currentEnemy.player = this;
+            }
         }
      }
+
+     public void TakeDamage(){
+        if (!isTakingDamage)
+        {
+            currentHealth -= 10;
+
+            StartCoroutine(ShowDamageEffect());
+
+
+            if (currentHealth <= 0)
+            {
+                // Colocar aqui a tela e a animação de morte
+                Destroy(gameObject);
+            }
+        }
+    }
+     private IEnumerator ShowDamageEffect()
+    {
+        isTakingDamage = true;
+
+        // Alterar a cor do inimigo para vermelho (ou qualquer outra cor que você desejar)
+        spriteRenderer.color = Color.red;
+
+        yield return new WaitForSeconds(damageDuration);
+
+        // Voltar à cor normal do inimigo
+        spriteRenderer.color = Color.white;
+
+        isTakingDamage = false;
+    }
+    
 }
