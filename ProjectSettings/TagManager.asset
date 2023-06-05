@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -12,7 +13,11 @@ TagManager:
   - Water
   - UI
   - chao
+<<<<<<< HEAD
   - Player
+=======
+  - inimigos
+>>>>>>> 1de5d2ecc2965bb50242cae764df59d25b8d27e0
   - 
   - 
   - 
