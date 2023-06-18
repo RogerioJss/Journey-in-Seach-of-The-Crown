@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Movimento1 : MonoBehaviour
 {
-   
+
     private float horizontalInput;
     private Rigidbody2D rb;
     [SerializeField] private int velocidade = 5;
@@ -32,10 +32,17 @@ public class Movimento1 : MonoBehaviour
     [Header("Variaveis de combate")]
     public int maxHealth = 100;
     private int currentHealth;
+    public int danoInimigo = 10;
     public float damageDuration = 0.5f;
     private bool isTakingDamage = false;
+    private bool defesa = false;
+  
 
-    private EnemyMoviment currentEnemy;
+    [Header("Hud")]
+    public Transform healthBar;         // barra verde
+    public GameObject healthBarObject;  // objeto pai das barras
+    private Vector3 healthBarScale;     //tamanho da barra
+    private float healthPercent;       //percentual de vida para o calculo do tamanho da barra
 
 
     public void Awake()
@@ -45,6 +52,8 @@ public class Movimento1 : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         checkLocalX = atackCheck.localPosition.x;
         currentHealth = maxHealth;
+        healthBarScale = healthBar.localScale;
+        healthPercent = healthBarScale.x / maxHealth;
     }
 
 
@@ -85,7 +94,20 @@ public class Movimento1 : MonoBehaviour
                 timeNextAtack -= Time.deltaTime;
             }
         }
-
+        if(Input.GetButton("Fire2") && rb.velocity == Vector2.zero)
+        {
+            if(!defesa)
+            {
+                animator.SetTrigger("Defesa");
+                defesa = true;
+            }
+            else if(defesa)
+            {
+                animator.Play("");
+                defesa = false;
+            }
+            
+        }
         UpdateEnemy();
     }
 
@@ -128,22 +150,28 @@ public class Movimento1 : MonoBehaviour
         for (int i = 0; i < enemies.Length; i++)
         {
             //Debug.Log (enemies [i].name); mostra os inimigos que estao na tela
-
-            if(currentEnemy == null){
-                currentEnemy = enemies[i].GetComponent<EnemyMoviment>();
+            EnemyMoviment currentEnemy = enemies[i].GetComponent<EnemyMoviment>();
+            if(currentEnemy!=null){
                 currentEnemy.player = this;
             }
+            
+        
         }
      }
 
      public void TakeDamage(){
         if (!isTakingDamage)
         {
-            currentHealth -= 10;
-
+            if(defesa == true){
+                danoInimigo = 3;
+                currentHealth -= danoInimigo;
+            }else if(defesa == false){
+            danoInimigo = 10;
+            currentHealth -= danoInimigo;
+            }
+            UpdateHealthBar();
             StartCoroutine(ShowDamageEffect());
-
-
+    
             if (currentHealth <= 0)
             {
                 // Colocar aqui a tela e a animação de morte
@@ -164,6 +192,11 @@ public class Movimento1 : MonoBehaviour
         spriteRenderer.color = Color.white;
 
         isTakingDamage = false;
+    }
+
+     void UpdateHealthBar(){
+        float newHealthBarScaleX = (float)currentHealth / maxHealth * healthBarScale.x;
+        healthBar.localScale = new Vector3(newHealthBarScaleX, healthBarScale.y, healthBarScale.z);
     }
     
 }
