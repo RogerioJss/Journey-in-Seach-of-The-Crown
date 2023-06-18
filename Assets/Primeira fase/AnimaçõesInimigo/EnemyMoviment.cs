@@ -11,7 +11,6 @@ public class EnemyMoviment : MonoBehaviour
     public float attackDistance = 2f;
     private bool isWalking = false;
     private Animator animator;
-    private float moveDirection = 1f;
     private SpriteRenderer spriteRenderer;
 
     public int maxHealth = 20;
@@ -25,8 +24,20 @@ public class EnemyMoviment : MonoBehaviour
     public LayerMask groundLayer;
     public Transform groundCheck;
 
+    public int danoPlayer = 10;    
+
     private bool isAttacking = false;
     public float attackDuration = 1.0f;
+
+    private bool isKnockBack;
+
+    [Header("Hud")]
+    public Transform healthBar;         // barra verde
+    public GameObject healthBarObject;  // objeto pai das barras
+    private Vector3 healthBarScale;     //tamanho da barra
+    private float healthPercent;       //percentual de vida para o calculo do tamanho da barra
+
+
 
     private void Awake()
     {
@@ -34,6 +45,8 @@ public class EnemyMoviment : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
         rb2D = GetComponent<Rigidbody2D>();
+        healthBarScale = healthBar.localScale;
+        healthPercent = healthBarScale.x / maxHealth; 
     }
 
     void Update()
@@ -49,9 +62,10 @@ public class EnemyMoviment : MonoBehaviour
                     StartCoroutine(Attack());
                 }
             }
-            else if (distance <= 10f) // Substitua 10f pela distância de visão desejada
+            else if (distance <= 10f && isGrounded && !isAttacking && !isKnockBack) // Substitua 10f pela distância de visão desejada
             {
                 bool isPlayerAhead = player.transform.position.x > transform.position.x;
+                isWalking = true;
 
                 if (isPlayerAhead)
                 {
@@ -70,11 +84,6 @@ public class EnemyMoviment : MonoBehaviour
                     }
                 }
 
-                if (isGrounded && !isAttacking)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
-                    isWalking = true;
-                }
             }
             else
             {
@@ -88,13 +97,19 @@ public class EnemyMoviment : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        if (isWalking)
+        {
+            float playerDir = Mathf.Sign(player.transform.position.x - transform.position.x);
+            rb2D.velocity = new Vector2( playerDir * speed, rb2D.velocity.y);
+        }
     }
 
     public void TakeDamage()
     {
         if (!isTakingDamage)
         {
-            currentHealth -= 10;
+            currentHealth -= danoPlayer;
+            UpdateHealthBar();
 
             StartCoroutine(ShowDamageEffect());
 
@@ -123,18 +138,26 @@ public class EnemyMoviment : MonoBehaviour
         isTakingDamage = false;
     }
 
-    private IEnumerator Knockback()
+    public IEnumerator Knockback()
+{
+    isKnockBack = true;
+    const float knockbackDuration = 0.3f;
+    const float knockbackForce = 10f;
+
+    float playerDir = Mathf.Sign(player.transform.position.x - transform.position.x);
+    float elapsedTime = 0f;
+    while (elapsedTime < knockbackDuration)
     {
-        const float knockbackDuration = 0.2f;
-        const float knockbackForce = 10f;
-
-        Vector2 knockbackDirection = (transform.position - player.transform.position).normalized;
-        rb2D.velocity = knockbackDirection * knockbackForce;
-
-        yield return new WaitForSeconds(knockbackDuration);
-
-        rb2D.velocity = Vector2.zero;
+        rb2D.velocity = new Vector2(-playerDir * knockbackForce, rb2D.velocity.y);
+        elapsedTime += Time.deltaTime;
+        yield return null;
     }
+
+    rb2D.velocity = Vector2.zero;
+
+    isKnockBack = false;
+}
+
 
     private IEnumerator Attack()
     {
@@ -150,5 +173,11 @@ public class EnemyMoviment : MonoBehaviour
 
 
         isAttacking = false;
+    }
+
+
+    void UpdateHealthBar(){
+        float newHealthBarScaleX = (float)currentHealth / maxHealth * healthBarScale.x;
+        healthBar.localScale = new Vector3(newHealthBarScaleX, healthBarScale.y, healthBarScale.z);
     }
 }

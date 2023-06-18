@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NpcDialogue : MonoBehaviour
+public class DialogueNpc : MonoBehaviour
 {
     public string[] dialogueNpc;
     public int dialogueIndex;
@@ -32,7 +32,7 @@ public class NpcDialogue : MonoBehaviour
             Debug.Log("Enter key pressed. Ready to speak: " + readyToSpeak);
             if (!startDialogue)
             {
-                StartDialogue();
+                StartDialogue();;
             }
             else
             {
@@ -50,6 +50,7 @@ public class NpcDialogue : MonoBehaviour
         imageNpc.sprite = spriteNpc;
         dialoguePanel.SetActive(true);
         StartCoroutine(ShowDialogue());
+        
     }
 
     IEnumerator ShowDialogue()
