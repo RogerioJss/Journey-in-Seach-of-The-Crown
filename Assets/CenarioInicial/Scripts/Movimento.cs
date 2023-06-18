@@ -13,7 +13,7 @@ public class Movimento : MonoBehaviour
     [SerializeField] private Transform look;
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private float cameraSpeed;
-
+    public AudioSource jumpAudio;
 
 
 
@@ -28,6 +28,7 @@ public class Movimento : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        jumpAudio = GameObject.Find("SoundManager").GetComponent<AudioSource>();
     }
    
 
@@ -39,6 +40,7 @@ public class Movimento : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space ) && estaNoChao)
         {
             rb.AddForce(Vector2.up * 600);
+            jumpAudio.Play();
         }
 
         estaNoChao =  Physics2D.OverlapCircle(peDoPersonagem.position, 0.2f, chaoLayer);

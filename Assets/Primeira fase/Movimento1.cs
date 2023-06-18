@@ -19,6 +19,7 @@ public class Movimento1 : MonoBehaviour
     private int movendoHash = Animator.StringToHash("movendo");
 
     private int pulandoHash = Animator.StringToHash("pulando");
+    public AudioSource jumpAudio;
 
     private SpriteRenderer spriteRenderer;
     private float checkLocalX;
@@ -27,6 +28,7 @@ public class Movimento1 : MonoBehaviour
     public Transform atackCheck;
     public float radiusAttack;
     public LayerMask layerEnemy;
+    public AudioSource golpeAudio;
     float timeNextAtack;
 
     [Header("Variaveis de combate")]
@@ -50,6 +52,8 @@ public class Movimento1 : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        jumpAudio = GameObject.Find("SoundManagers").GetComponent<AudioSource>();
+        golpeAudio = GameObject.Find("AtaqueSound").GetComponent<AudioSource>();
         checkLocalX = atackCheck.localPosition.x;
         currentHealth = maxHealth;
         healthBarScale = healthBar.localScale;
@@ -65,6 +69,7 @@ public class Movimento1 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             rb.AddForce(Vector2.up * 600); // Força do pulo
+            jumpAudio.Play();
         }
 
         estaNoChao = Physics2D.OverlapCircle(peDoPersonagem.position, 0.2f, chaoLayer);
@@ -88,6 +93,7 @@ public class Movimento1 : MonoBehaviour
             {
                 animator.SetTrigger("Atack");
                 timeNextAtack = 0f;
+                golpeAudio.Play();
             }
             else
             {
