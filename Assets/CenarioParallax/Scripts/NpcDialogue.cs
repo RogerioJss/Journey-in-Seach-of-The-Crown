@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueControl : MonoBehaviour
+public class NpcDialogue : MonoBehaviour
 {
     public string[] dialogueNpc;
     public int dialogueIndex;
@@ -17,7 +17,6 @@ public class DialogueControl : MonoBehaviour
 
     public bool readyToSpeak;
     public bool startDialogue;
-    public AudioSource parchmentAudio;
 
     void Start()
     {
@@ -34,7 +33,6 @@ public class DialogueControl : MonoBehaviour
             if (!startDialogue)
             {
                 StartDialogue();
-                parchmentAudio.Play();
             }
             else
             {
@@ -52,7 +50,6 @@ public class DialogueControl : MonoBehaviour
         imageNpc.sprite = spriteNpc;
         dialoguePanel.SetActive(true);
         StartCoroutine(ShowDialogue());
-        parchmentAudio =GameObject.Find("PergaminhoSound").GetComponent<AudioSource>();
     }
 
     IEnumerator ShowDialogue()

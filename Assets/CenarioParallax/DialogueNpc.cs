@@ -32,7 +32,7 @@ public class DialogueNpc : MonoBehaviour
             Debug.Log("Enter key pressed. Ready to speak: " + readyToSpeak);
             if (!startDialogue)
             {
-                StartDialogue();;
+                StartDialogue();
             }
             else
             {
@@ -50,7 +50,6 @@ public class DialogueNpc : MonoBehaviour
         imageNpc.sprite = spriteNpc;
         dialoguePanel.SetActive(true);
         StartCoroutine(ShowDialogue());
-        
     }
 
     IEnumerator ShowDialogue()
