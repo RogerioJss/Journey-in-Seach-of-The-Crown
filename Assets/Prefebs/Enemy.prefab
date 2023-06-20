@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1401935326209587827}
   - component: {fileID: 4718348566426233398}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: groundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ Transform:
   - {fileID: 1401935326209587827}
   - {fileID: 2111214623793359877}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &743573852659355428
 SpriteRenderer:
@@ -246,10 +246,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  maxHealth: 30
+  currentHealth: 0
   target: {fileID: 0}
   speed: 3
   attackDistance: 1
-  maxHealth: 30
   damageDuration: 0.5
   groundLayer:
     serializedVersion: 2

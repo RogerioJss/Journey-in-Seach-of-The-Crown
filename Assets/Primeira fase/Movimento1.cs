@@ -19,7 +19,6 @@ public class Movimento1 : MonoBehaviour
     private int movendoHash = Animator.StringToHash("movendo");
 
     private int pulandoHash = Animator.StringToHash("pulando");
-    public AudioSource jumpAudio;
 
     private SpriteRenderer spriteRenderer;
     private float checkLocalX;
@@ -28,7 +27,6 @@ public class Movimento1 : MonoBehaviour
     public Transform atackCheck;
     public float radiusAttack;
     public LayerMask layerEnemy;
-    public AudioSource golpeAudio;
     float timeNextAtack;
 
     [Header("Variaveis de combate")]
@@ -38,6 +36,7 @@ public class Movimento1 : MonoBehaviour
     public float damageDuration = 0.5f;
     private bool isTakingDamage = false;
     private bool defesa = false;
+    public bool estaVivo = true;
   
 
     [Header("Hud")]
@@ -45,6 +44,10 @@ public class Movimento1 : MonoBehaviour
     public GameObject healthBarObject;  // objeto pai das barras
     private Vector3 healthBarScale;     //tamanho da barra
     private float healthPercent;       //percentual de vida para o calculo do tamanho da barra
+    public GameController gameController;
+
+
+    
 
 
     public void Awake()
@@ -52,8 +55,6 @@ public class Movimento1 : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        jumpAudio = GameObject.Find("SoundManagers").GetComponent<AudioSource>();
-        golpeAudio = GameObject.Find("AtaqueSound").GetComponent<AudioSource>();
         checkLocalX = atackCheck.localPosition.x;
         currentHealth = maxHealth;
         healthBarScale = healthBar.localScale;
@@ -69,7 +70,6 @@ public class Movimento1 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             rb.AddForce(Vector2.up * 600); // Força do pulo
-            jumpAudio.Play();
         }
 
         estaNoChao = Physics2D.OverlapCircle(peDoPersonagem.position, 0.2f, chaoLayer);
@@ -93,7 +93,6 @@ public class Movimento1 : MonoBehaviour
             {
                 animator.SetTrigger("Atack");
                 timeNextAtack = 0f;
-                golpeAudio.Play();
             }
             else
             {
@@ -130,16 +129,22 @@ public class Movimento1 : MonoBehaviour
 
     void PlayerAttack()
     {
+        Collider2D[] bossAttack = Physics2D.OverlapCircleAll(atackCheck.position, radiusAttack, layerEnemy);
         Collider2D[] enemiesAttack = Physics2D.OverlapCircleAll(atackCheck.position, radiusAttack, layerEnemy);
         for (int i = 0; i < enemiesAttack.Length; i++)
         {
-            //Debug.Log (enemiesAttack [i].name); mostra o nome dos inimigos que o jogador ataca
              EnemyMoviment enemy = enemiesAttack[i].GetComponent<EnemyMoviment>();
+            Boss boss = bossAttack[i]?.GetComponent<Boss>(); // Adicione o operador de verificação de nulo "?"
             if (enemy != null)
         {
-            enemy.TakeDamage(); // Chame o método TakeDamage() do inimigo para aplicar dano
+                enemy.TakeDamage(); // Chame o método TakeDamage() do inimigo para aplicar dano
         }
-        }
+            if (boss != null) // Adicione a verificação para o boss
+        {
+                boss.TakeDamage(); // Chame o método TakeDamage() do boss para aplicar dano
+         }
+}
+
     }
 
 
@@ -151,14 +156,13 @@ public class Movimento1 : MonoBehaviour
             new Vector2 (cam.transform.position.x - (width / 2 ), cam.transform.position.y + (height / 2 ) ),
             new Vector2 (cam.transform.position.x + (width / 2 ), cam.transform.position.y - (height / 2 ) ),
             layerEnemy
-            
         );
         for (int i = 0; i < enemies.Length; i++)
         {
             //Debug.Log (enemies [i].name); mostra os inimigos que estao na tela
-            EnemyMoviment currentEnemy = enemies[i].GetComponent<EnemyMoviment>();
+            Enemy currentEnemy = enemies[i].GetComponent<Enemy>();
             if(currentEnemy!=null){
-                currentEnemy.player = this;
+                currentEnemy.SetPlayer(this);
             }
             
         
@@ -169,7 +173,7 @@ public class Movimento1 : MonoBehaviour
         if (!isTakingDamage)
         {
             if(defesa == true){
-                danoInimigo = 3;
+                danoInimigo = danoInimigo - 7;
                 currentHealth -= danoInimigo;
             }else if(defesa == false){
             danoInimigo = 10;
@@ -180,8 +184,10 @@ public class Movimento1 : MonoBehaviour
     
             if (currentHealth <= 0)
             {
-                // Colocar aqui a tela e a animação de morte
                 Destroy(gameObject);
+                gameController.GameOver();
+                // Colocar aqui a tela e a animação de morte
+                
             }
         }
     }

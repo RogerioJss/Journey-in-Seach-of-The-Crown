@@ -1,10 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyMoviment : MonoBehaviour
+public class EnemyMoviment : Enemy
 {
-   
-    public Movimento1 player;
 
     public Transform target;
     public float speed = 5f;
@@ -13,8 +11,6 @@ public class EnemyMoviment : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
-    public int maxHealth = 20;
-    private int currentHealth;
     public float damageDuration = 0.5f;
     private bool isTakingDamage = false;
 
