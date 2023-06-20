@@ -19,6 +19,7 @@ public class Movimento1 : MonoBehaviour
     private int movendoHash = Animator.StringToHash("movendo");
 
     private int pulandoHash = Animator.StringToHash("pulando");
+    public AudioSource jumpAudio;
 
     private SpriteRenderer spriteRenderer;
     private float checkLocalX;
@@ -28,6 +29,7 @@ public class Movimento1 : MonoBehaviour
     public float radiusAttack;
     public LayerMask layerEnemy;
     float timeNextAtack;
+    public AudioSource AtackAudio;
 
     [Header("Variaveis de combate")]
     public int maxHealth = 100;
@@ -37,6 +39,7 @@ public class Movimento1 : MonoBehaviour
     private bool isTakingDamage = false;
     private bool defesa = false;
     public bool estaVivo = true;
+    public AudioSource DefesaAudio;
   
 
     [Header("Hud")]
@@ -55,6 +58,9 @@ public class Movimento1 : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        jumpAudio = GameObject.Find("jumpSound").GetComponent<AudioSource>();
+        AtackAudio = GameObject.Find("AtackAudio").GetComponent<AudioSource>();
+        DefesaAudio = GameObject.Find("defesaAudio").GetComponent<AudioSource>();
         checkLocalX = atackCheck.localPosition.x;
         currentHealth = maxHealth;
         healthBarScale = healthBar.localScale;
@@ -70,6 +76,7 @@ public class Movimento1 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && estaNoChao)
         {
             rb.AddForce(Vector2.up * 600); // Força do pulo
+            jumpAudio.Play();
         }
 
         estaNoChao = Physics2D.OverlapCircle(peDoPersonagem.position, 0.2f, chaoLayer);
@@ -92,6 +99,7 @@ public class Movimento1 : MonoBehaviour
             if (Input.GetButtonDown("Fire1") && rb.velocity == Vector2.zero) // Corrected comparison
             {
                 animator.SetTrigger("Atack");
+                DefesaAudio.Play();
                 timeNextAtack = 0f;
             }
             else
@@ -197,6 +205,7 @@ public class Movimento1 : MonoBehaviour
 
         // Alterar a cor do inimigo para vermelho (ou qualquer outra cor que você desejar)
         spriteRenderer.color = Color.red;
+        AtackAudio.Play();
 
         yield return new WaitForSeconds(damageDuration);
 

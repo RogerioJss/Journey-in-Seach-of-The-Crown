@@ -23,11 +23,13 @@ public class Movimento : MonoBehaviour
 
     private int movendoHash = Animator.StringToHash("movendo");
     private int pulandoHash = Animator.StringToHash("pulando");
+    public AudioSource jumpAudio;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        jumpAudio = GameObject.Find("jumpSound").GetComponent<AudioSource>();
     }
    
 
@@ -39,6 +41,7 @@ public class Movimento : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space ) && estaNoChao)
         {
             rb.AddForce(Vector2.up * 600);
+            jumpAudio.Play();
         }
 
         estaNoChao =  Physics2D.OverlapCircle(peDoPersonagem.position, 0.2f, chaoLayer);
