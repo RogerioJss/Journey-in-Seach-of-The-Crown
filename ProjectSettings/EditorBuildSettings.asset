@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CenarioParallax/CenarioPrologo.unity
     guid: 9fe5cb3d4a19bb24d920a1e0d963f6ff
+  - enabled: 1
+    path: Assets/Primeira fase/PrimeiraFase.unity
+    guid: 19fa7a8c6ad018b4e9ae50d468ab4115
   m_configObjects: {}
